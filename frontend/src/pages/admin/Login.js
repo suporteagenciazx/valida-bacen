@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ShieldCheck, Mail, KeyRound, ArrowLeft } from "lucide-react";
+import { Mail, KeyRound, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdminLogin() {
@@ -32,8 +32,8 @@ export default function AdminLogin() {
         <div className="absolute inset-0 opacity-[0.05]"
              style={{ backgroundImage: "radial-gradient(circle at 25% 25%, #fff 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
         <div className="relative z-10 m-auto px-12 max-w-lg">
-          <div className="w-12 h-12 rounded-md bg-white/10 flex items-center justify-center mb-8">
-            <ShieldCheck className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-md bg-white flex items-center justify-center mb-8 p-1.5">
+            <img src="/bacen-logo.png" alt="Banco Central do Brasil" className="w-full h-full object-contain" />
           </div>
           <div className="text-[11px] uppercase tracking-[0.25em] opacity-70 mb-3">
             Painel Administrativo
@@ -110,12 +110,6 @@ export default function AdminLogin() {
               {loading ? <span className="spinner" /> : "Entrar no painel"}
             </button>
           </form>
-
-          <div className="mt-8 p-4 rounded-md bg-gray-50 border border-gray-200 text-xs text-gray-600">
-            <div className="font-semibold mb-1 text-gray-700">Credenciais de demonstração:</div>
-            <div>Admin: <span className="font-mono">admin@validabacen.com / Admin@123</span></div>
-            <div>Gerente: <span className="font-mono">gerente@validabacen.com / Gerente@123</span></div>
-          </div>
         </div>
       </div>
     </div>

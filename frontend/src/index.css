@@ -166,4 +166,14 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Hide emergent badge in client print? keep as-is */
+/* Hide Emergent badge on all pages */
+#emergent-badge { display: none !important; }
+
+/* Print: ensure proposal view renders properly */
+@media print {
+  body, html { background: #ffffff !important; }
+  .print\:hidden { display: none !important; }
+  .print\:bg-white { background: #ffffff !important; }
+  .card, .surface { box-shadow: none !important; }
+  @page { margin: 14mm; }
+}

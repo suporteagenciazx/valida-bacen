@@ -7,8 +7,6 @@ import {
   Moon,
   Sun,
   LogOut,
-  ShieldCheck,
-  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
@@ -37,8 +35,8 @@ export default function AdminShell() {
       {/* Sidebar */}
       <aside className="hidden md:flex w-64 flex-col surface border-r border-gray-200 dark:border-[var(--color-border-dark)] sticky top-0 h-screen">
         <div className="px-5 py-5 border-b border-gray-200 dark:border-[var(--color-border-dark)] flex items-center gap-3">
-          <div className="w-9 h-9 rounded-md bg-[#025c75] text-white flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-md bg-white dark:bg-white flex items-center justify-center p-1 border border-gray-200 dark:border-[var(--color-border-dark)]">
+            <img src="/bacen-logo.png" alt="BACEN" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500 dark:text-[var(--color-text-muted-dark)]">
@@ -106,8 +104,8 @@ export default function AdminShell() {
       {/* Mobile topbar */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-40 surface border-b border-gray-200 dark:border-[var(--color-border-dark)] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-md bg-[#025c75] text-white flex items-center justify-center">
-            <ShieldCheck className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-md bg-white border border-gray-200 dark:border-[var(--color-border-dark)] flex items-center justify-center p-0.5">
+            <img src="/bacen-logo.png" alt="BACEN" className="w-full h-full object-contain" />
           </div>
           <div className="font-bold text-gray-900 dark:text-[var(--color-text-dark)]">Valida BACEN</div>
         </div>

