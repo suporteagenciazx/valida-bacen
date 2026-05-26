@@ -1,54 +1,89 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "sonner";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { ThemeProvider } from "@/context/ThemeContext";
+import "@/index.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import ClientValidation from "@/pages/ClientValidation";
+import ProposalView from "@/pages/ProposalView";
+import AdminLogin from "@/pages/admin/Login";
+import AdminShell from "@/pages/admin/AdminShell";
+import Dashboard from "@/pages/admin/Dashboard";
+import Companies from "@/pages/admin/Companies";
+import CompanyForm from "@/pages/admin/CompanyForm";
+import Proposals from "@/pages/admin/Proposals";
+import ProposalForm from "@/pages/admin/ProposalForm";
+import ProposalDetails from "@/pages/admin/ProposalDetails";
+import Users from "@/pages/admin/Users";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
-
-function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+function RequireAuth({ children, adminOnly }) {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/admin/login" replace />;
+  if (adminOnly && user.role !== "admin") return <Navigate to="/admin" replace />;
+  return children;
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster
+            position="top-right"
+            richColors
+            toastOptions={{ style: { fontFamily: "Ubuntu, sans-serif" } }}
+          />
+          <Routes>
+            {/* Public */}
+            <Route path="/" element={<ClientValidation />} />
+            <Route path="/proposta" element={<ProposalView />} />
+
+            {/* Admin */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route
+              path="/admin"
+              element={
+                <RequireAuth>
+                  <AdminShell />
+                </RequireAuth>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="propostas" element={<Proposals />} />
+              <Route path="propostas/nova" element={<ProposalForm />} />
+              <Route path="propostas/:id" element={<ProposalDetails />} />
+              <Route path="propostas/:id/editar" element={<ProposalForm />} />
+              <Route path="empresas" element={<Companies />} />
+              <Route
+                path="empresas/nova"
+                element={
+                  <RequireAuth adminOnly>
+                    <CompanyForm />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="empresas/:id/editar"
+                element={
+                  <RequireAuth adminOnly>
+                    <CompanyForm />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="usuarios"
+                element={
+                  <RequireAuth adminOnly>
+                    <Users />
+                  </RequireAuth>
+                }
+              />
+            </Route>
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
