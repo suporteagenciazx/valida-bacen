@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend E2E tested for Valida BACEN React app. Covered: public client validation (valid + invalid), proposal view, admin & gerente login, dashboard, role-based sidebar nav, dark/light theme toggle + persistence, proposals list (search/filter/details), add+delete manual history entry, proposal form (admin + gerente), companies read-only for gerente, users page CRUD (create/delete gerente by admin), /admin/usuarios redirect for gerente, logout. All major flows working. Backend was already 25/25 green in iteration_1; this iteration is frontend-only.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ProposalForm (admin/propostas/nova)", "issues": ["React hydration warning in console: '<span> cannot be a child of <option>'. Caused by Emergent dev-instrumentation injecting <span style={display:contents}> inside <option> elements where {c.razao_social} and {g.name} are interpolated. Dev-only noise (no production impact and no functional break), but pollutes the browser console."]}
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_2.json", "/app/test_reports/iteration_1.json (prev backend)"],
+  "action_items": [
+    "(Optional) When all 4 seeded companies already have a proposal, the company-select dropdown in /admin/propostas/nova shows only the placeholder (which is the intended '1 proposta por CNPJ' rule). Consider showing a helper hint like 'Todas as empresas já possuem proposta. Cadastre uma nova empresa.' to avoid user confusion when the dropdown looks empty.",
+    "(Optional) Suppress dev-time hydration warning by wrapping {c.razao_social} / {g.name} in a way that the instrumentation does not inject <span> inside <option> (e.g., move dynamic text to option's children via a variable assigned outside JSX). Not blocking."
+  ],
+  "critical_code_review_comments": [
+    "ProposalForm.js: gerente-select is hidden for gerente role (count=0) instead of being rendered as a disabled select pre-populated with the user's own name. PRD says 'gerente cannot change Gerente (disabled showing own name)'. Current implementation effectively achieves the same outcome (gerente_id is auto-set from useEffect line 82, and gerente cannot pick another), but the visible 'disabled select with own name' affordance asked in the request is missing. Functional impact: low (backend still receives correct gerente_id and gerente sees their name elsewhere on the form).",
+    "Single-file backend server.py (1000+ lines per grep on line numbers); consider splitting into routers/services as it grows.",
+    "All key elements have data-testid coverage — excellent testability."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (from iteration_1, not re-tested)", "frontend": "100% on tested flows (1 cosmetic dev-only console warning)"},
+  "test_credentials": "Admin: admin@validabacen.com / Admin@123 ; Gerente: gerente@validabacen.com / Gerente@123 ; Client: CNPJ 12.345.678/0001-90 / PROP-2026-0001 / VB-A4F9-K2M7-X8P1",
+  "seed_data_creation": "Created and then DELETED via API: 1 history entry (TEST entry from playwright) in proposal PROP-2026-0001. Created and DELETED via UI: 1 gerente user (TEST_USER_E2E / test_e2e@validabacen.com). DB is left clean.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Test environment: REACT_APP_BACKEND_URL=https://bacen-validator.preview.emergentagent.com. Backend auth endpoint is /api/auth/login (not /api/admin/auth/login). All admin endpoints under /api/admin/* require Bearer token from auth/login. data-testid coverage is comprehensive across pages (cnpj-input, validate-submit-btn, login-email-input, login-password-input, login-submit-btn, admin-shell, dashboard-page, nav-{dashboard|propostas|empresas|gerentes}, theme-toggle-btn, logout-btn, proposals-page, proposal-search-input, proposal-status-filter, new-proposal-btn, view-proposal-{id}, edit-proposal-{id}, delete-proposal-{id}, proposal-form-page, company-select, gerente-select, codigo-input, token-input, proposal-save-btn, proposal-details-page, add-history-btn, history-modal, history-date-input, history-time-input, history-author-input, history-description-input, history-submit-btn, companies-page, new-company-btn, users-page, new-user-btn, user-modal, user-name-input, user-email-input, user-password-input, user-role-select, user-save-btn, edit-user-{id}, delete-user-{id}, proposal-view-page, proposal-codigo, back-home-btn). The client validation /api/proposals/validate has an intentional 4.5s frontend delay (use >=6s waits). Companies dropdown in proposal form is filtered: only companies WITHOUT an existing proposal appear (enforces 1-per-CNPJ rule). Gerente role: nav-gerentes hidden; /admin/usuarios redirects to /admin; new-company-btn absent; gerente-select hidden in proposal form (gerente_id auto-set to own id).",
+  "rca_of_the_issue": "N/A — no functional issues found. The only console noise (hydration warning for <span> in <option>) is caused by Emergent's runtime instrumentation (x-ve-dynamic spans), not the app code itself."
+}
