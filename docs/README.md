@@ -15,9 +15,10 @@ administrativo (Admin / Gerente) construído em **React + FastAPI + MongoDB**.
 | [03 — Frontend](./03-frontend.md) | Estrutura de rotas, componentes e estilos |
 | [04 — Modelos de Dados](./04-modelos-de-dados.md) | Schemas MongoDB (users, companies, proposals) |
 | [05 — Autenticação & Roles](./05-autenticacao.md) | JWT, perfis Admin e Gerente, regras de acesso |
-| [06 — Setup local & Deploy](./06-setup-deploy.md) | Variáveis de ambiente, supervisor, comandos |
+| [06 — Setup local & Deploy (Emergent)](./06-setup-deploy.md) | Variáveis de ambiente, supervisor, comandos |
 | [07 — Migrações & Atualizações](./07-migracoes.md) | Como evoluir schemas, índices, seeds |
 | [08 — Histórico de mudanças](./08-changelog.md) | Versões e alterações relevantes |
+| [09 — Deploy Docker em VPS privada](./09-deploy-docker-vps.md) | docker-compose, Caddy/HTTPS, backup, hardening |
 
 ## Início rápido
 
@@ -50,17 +51,20 @@ Após subir, acesse:
 
 - **Cores:** `#025c75` (primária), `#f1f1f1` (fundo), `#ffffff` (superfície)
 - **Fonte:** `Ubuntu, "Segoe UI", "Helvetica Neue", Arial, sans-serif`
+- **Logo:** Banco Central do Brasil (`/public/bacen-logo.png`)
+- **Favicon:** `/public/favicon.ico`
 - **Dark mode:** apenas no painel admin (`/admin/*`)
 
 ## Funcionalidades principais
 
-1. **Validação pública** com CNPJ + Código + Token (delay 4.5s).
+1. **Validação pública** com CNPJ + Código + Token (delay 4,5s).
 2. **Painel admin** com login JWT (Admin / Gerente).
 3. **CRUD** completo de Propostas, Empresas e Usuários.
 4. **Histórico manual** de movimentações com data, hora, autor e descrição.
 5. **Vinculação Gerente ↔ Proposta** — gerentes só veem o que é deles.
 6. **Restrição 1 proposta por CNPJ.**
 7. **Dark / Light mode** persistente.
+8. **Imprimir / Salvar PDF** com `react-to-print` (funciona em iframe).
 
 ---
-Última atualização: **Janeiro / 2026**.
+Última atualização: **Janeiro / 2026** (versão 2.1.0 — ver `08-changelog.md`).

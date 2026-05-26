@@ -80,6 +80,34 @@ await Promise.all([api.post("/proposals/validate", ...), wait]);
 O delay roda em paralelo à chamada — se a API for mais rápida, espera; se for
 mais lenta, prevalece o tempo da API.
 
+## Imprimir / salvar proposta como PDF
+
+A página `ProposalView` usa a lib **`react-to-print`** (v3) que cria um iframe
+offscreen com o conteúdo do `printRef` e dispara o `print()` interno. Vantagens:
+
+- Funciona dentro de iframes (inclusive o preview do Emergent).
+- O usuário pode escolher "Salvar como PDF" no diálogo de impressão.
+- `documentTitle = "Proposta-<código>"` sugere o nome do arquivo.
+
+```jsx
+const printRef = useRef(null);
+const handlePrint = useReactToPrint({ contentRef: printRef, documentTitle: ... });
+<button onClick={handlePrint}>Imprimir</button>
+<div ref={printRef}>{/* conteúdo da proposta */}</div>
+```
+
+CSS adicional em `index.css` aplica `@media print` para fundo branco e
+remoção de sombras.
+
+## Branding (BACEN)
+
+- Favicon em `/public/favicon.ico` referenciado em `index.html`.
+- Logo BACEN em `/public/bacen-logo.png` usado em:
+  - Home pública (header).
+  - Painel admin (sidebar + topbar mobile).
+  - Tela de login (lado escuro).
+- Cor primária `#025c75` apenas como fundo / accents.
+
 ## data-testid
 
 Todos os elementos interativos e elementos-chave de UI possuem `data-testid` em

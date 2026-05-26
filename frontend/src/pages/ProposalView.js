@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Building2, Banknote, FileText, ScrollText, Calendar, ShieldCheck, Printer } from "lucide-react";
+import { useReactToPrint } from "react-to-print";
+import { ArrowLeft, Calendar, ShieldCheck, Printer } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
 import { formatBRL, formatDate, formatDateTime, PORTE_LABELS } from "@/lib/api";
 
@@ -31,6 +32,18 @@ function Section({ title, children }) {
 export default function ProposalView() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  const printRef = useRef(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: data ? `Proposta-${data.proposal?.codigo || ""}` : "Proposta",
+    pageStyle: `
+      @page { size: A4; margin: 14mm; }
+      @media print {
+        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff !important; font-family: Ubuntu, 'Segoe UI', Arial, sans-serif; }
+      }
+    `,
+  });
 
   useEffect(() => {
     const raw = sessionStorage.getItem("vb_validated") || localStorage.getItem("vb_validated");
@@ -39,11 +52,11 @@ export default function ProposalView() {
       return;
     }
     setData(JSON.parse(raw));
-    // If opened with ?print=1, auto-trigger print after the page renders
     const params = new URLSearchParams(window.location.search);
     if (params.get("print") === "1") {
-      setTimeout(() => window.print(), 500);
+      setTimeout(() => handlePrint && handlePrint(), 700);
     }
+    // eslint-disable-next-line
   }, [navigate]);
 
   if (!data) return null;
@@ -71,15 +84,7 @@ export default function ProposalView() {
             <span>Proposta autenticada</span>
           </div>
           <button
-            onClick={() => {
-              const inIframe = window.self !== window.top;
-              if (inIframe) {
-                // Open in a real tab where window.print() works reliably; auto-prints via ?print=1
-                window.open("/proposta?print=1", "_blank", "noopener,noreferrer");
-              } else {
-                setTimeout(() => window.print(), 50);
-              }
-            }}
+            onClick={handlePrint}
             className="flex items-center gap-2 text-sm opacity-90 hover:opacity-100"
             data-testid="print-btn"
           >
@@ -89,7 +94,7 @@ export default function ProposalView() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <div className="anim-fade-up">
+        <div ref={printRef} className="anim-fade-up">
           <div className="flex items-start justify-between flex-wrap gap-3 mb-6">
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#025c75]">
